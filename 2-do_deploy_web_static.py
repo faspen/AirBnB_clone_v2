@@ -4,15 +4,30 @@
 
 
 from fabric.api import *
-from os import path
-
+import os.path
+from datetime import datetime
 
 env.hosts = ['34.75.252.237', '107.20.130.157']
 
 
+def do_pack():
+    """Do pack"""
+    item = datetime.now()
+    time = item.strftime("%Y%m%d%H%M%S")
+    local("mkdir -p versions")
+    file_name = "web_static_" + time + ".tgz"
+    local("tar -cvzf versions/" + file_name + " web_static")
+    data = "versions/" + file_name
+    if os.path.isfile(data):
+        print(
+            "web_static packed: {} -> {}".format(data, os.path.getsize(data)))
+    else:
+        return None
+
+
 def do_deploy(archive_path):
     """Do deploy"""
-    if not path.isfile(archive_path):
+    if not os.path.isfile(archive_path):
         return False
     try:
         new_path = archive_path.split('/')
