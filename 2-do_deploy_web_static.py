@@ -27,7 +27,7 @@ def do_pack():
 
 def do_deploy(archive_path):
     """Do deploy"""
-    if not os.path.exists(archive_path):
+    if os.path.exists(archive_path) is False:
         return False
     try:
         new_path = archive_path.split('/')
