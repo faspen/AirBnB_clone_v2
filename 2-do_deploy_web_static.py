@@ -18,7 +18,7 @@ def do_pack():
     file_name = "web_static_" + time + ".tgz"
     local("tar -cvzf versions/" + file_name + " web_static")
     data = "versions/" + file_name
-    if os.path.isfile(data):
+    if os.path.exists(data):
         print(
             "web_static packed: {} -> {}".format(data, os.path.getsize(data)))
     else:
@@ -27,7 +27,7 @@ def do_pack():
 
 def do_deploy(archive_path):
     """Do deploy"""
-    if not os.path.isfile(archive_path):
+    if not os.path.exists(archive_path):
         return False
     try:
         new_path = archive_path.split('/')

@@ -12,22 +12,21 @@ env.hosts = ['34.75.252.237', '107.20.130.157']
 
 def do_pack():
     """Do pack"""
-    item = datetime.now()
-    time = item.strftime("%Y%m%d%H%M%S")
-    local("mkdir -p versions")
-    file_name = "web_static_" + time + ".tgz"
-    local("tar -cvzf versions/" + file_name + " web_static")
-    data = "versions/" + file_name
-    if os.path.isfile(data):
-        print(
-            "web_static packed: {} -> {}".format(data, os.path.getsize(data)))
-    else:
+    try:
+        item = datetime.now()
+        time = item.strftime("%Y%m%d%H%M%S")
+        local("mkdir -p versions")
+        file_name = "web_static_" + time + ".tgz"
+        local("tar -cvzf versions/" + file_name + " web_static")
+        data = "versions/" + file_name
+        return data
+    except:
         return None
 
 
 def do_deploy(archive_path):
     """Do deploy"""
-    if not os.path.isfile(archive_path):
+    if not os.path.exists(archive_path):
         return False
     try:
         new_path = archive_path.split('/')
@@ -50,3 +49,11 @@ def do_deploy(archive_path):
         return True
     except:
         return False
+
+
+def deploy():
+    """Deploy"""
+    push = do_pack()
+    if os.path.exists(push) is False:
+        return False
+    return do_deploy(push)
