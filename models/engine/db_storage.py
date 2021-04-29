@@ -50,19 +50,12 @@ class DBStorage:
         """Display all objects
         """
         all_dict = {}
-        if cls in classes:
-            item = self.__session.query(classes[cls]).all()
-            for obj in item:
-                k = "{}.{}".format(obj.__class__.__name__, obj.id)
-                v = obj
-                all_dict[k] = v
-        elif cls is None:
-            for model in classes:
-                item = self.__session.query(classes[cls]).all()
-                for obj in item:
-                    k = "{}.{}".format(obj.__class__.__name__, obj.id)
-                    v = obj
-                    all_dict[k] = v
+        for item in classes:
+            if cls is None or cls is item or cls is classes[item]:
+                objects = self.__session.query(classes[item]).all()
+                for i in objects:
+                    k = i.__class__.__name__ + '.' + i.id
+                    all_dict[k] = i
         return all_dict
 
     def new(self, obj):
@@ -85,10 +78,10 @@ class DBStorage:
         """Magic
         """
         Base.metadata.create_all(self.__engine)
-        Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(Session)
-        self.__session = Session()
+        make = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(make)
+        self.__session = Session
 
     def close(self):
         """Close session"""
-        self.__session.close()
+        self.__session.remove()
