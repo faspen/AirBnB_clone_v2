@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""States and state"""
 
 
 from flask import Flask, render_template
