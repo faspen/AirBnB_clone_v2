@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""hbnb filters"""
 
 
 from flask import Flask, render_template
